@@ -1,4 +1,5 @@
-﻿using InvoiceApi.Repository.IRepository;
+﻿using InvoiceApi.Models.Dto;
+using InvoiceApi.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceApi.Controllers
@@ -16,6 +17,21 @@ namespace InvoiceApi.Controllers
         {
             var customerInvoice = await _customerInvoiceRepo.GetCustomerInvoiceSummaryAsync();
             return Ok(customerInvoice);
+        }
+
+        [HttpPost]
+        [Route("{id:int}")]
+        public async Task<IActionResult> AddInvoiceOnCustomer(int id, [FromBody] CustomerInvoiceDto customerInvoice)
+        {
+            try
+            {
+                await _customerInvoiceRepo.AddCustomerInvoiceAsync(id, customerInvoice);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occured: " + ex.Message);
+            }
         }
     }
 }
